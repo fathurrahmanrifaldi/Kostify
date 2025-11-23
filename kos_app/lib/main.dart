@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart'; // ⭐ TAMBAHKAN
 import 'config/theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/kamar_provider.dart';
@@ -15,6 +16,9 @@ void main() async {
   
   // Initialize API Service
   await ApiService().init();
+  
+  // ⭐ Initialize Date Formatting
+  await initializeDateFormatting('id_ID', null);
   
   runApp(const MyApp());
 }

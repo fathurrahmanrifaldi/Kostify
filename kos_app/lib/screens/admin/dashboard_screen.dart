@@ -5,9 +5,16 @@ import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/kamar_provider.dart';
-import 'kamar/kamar_list_screen.dart';
 import '../../utils/helpers.dart';
 import '../auth/login_screen.dart';
+import '../shared/edit_profile_screen.dart';
+import '../shared/change_password_screen.dart';
+import 'kamar/kamar_list_screen.dart';
+import 'kamar/kamar_form_screen.dart';
+import 'penyewa/penyewa_list_screen.dart';
+import 'penyewa/penyewa_form_screen.dart';
+import 'pembayaran/pembayaran_list_screen.dart';
+import 'pembayaran/pembayaran_form_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -95,9 +102,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 1:
         return const KamarListScreen();
       case 2:
-        return const Center(child: Text('Penyewa (Coming Soon)'));
+        return const PenyewaListScreen();
       case 3:
-        return const Center(child: Text('Pembayaran (Coming Soon)'));
+        return const PembayaranListScreen();
       case 4:
         return _buildProfile();
       default:
@@ -222,7 +229,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: const Text('Tambah Kamar'),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () {
-                        Helpers.showSnackBar(context, 'Coming Soon');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const KamarFormScreen(),
+                          ),
+                        ).then((_) => _loadData());
                       },
                     ),
                     const Divider(height: 1),
@@ -234,7 +246,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: const Text('Tambah Penyewa'),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () {
-                        Helpers.showSnackBar(context, 'Coming Soon');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PenyewaFormScreen(),
+                          ),
+                        ).then((_) => _loadData());
                       },
                     ),
                     const Divider(height: 1),
@@ -246,7 +263,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: const Text('Catat Pembayaran'),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () {
-                        Helpers.showSnackBar(context, 'Coming Soon');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PembayaranFormScreen(),
+                          ),
+                        ).then((_) => _loadData());
                       },
                     ),
                   ],
@@ -330,7 +352,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     title: const Text('Edit Profile'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      Helpers.showSnackBar(context, 'Coming Soon');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const EditProfileScreen(),
+                        ),
+                      );
                     },
                   ),
                   const Divider(height: 1),
@@ -339,7 +366,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     title: const Text('Ubah Password'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      Helpers.showSnackBar(context, 'Coming Soon');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChangePasswordScreen(),
+                        ),
+                      );
                     },
                   ),
                   const Divider(height: 1),

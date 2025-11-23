@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/app_config.dart';
 import '../models/user_model.dart';
+import 'dart:convert';
 import 'api_service.dart';
 
 class AuthService {
@@ -124,16 +125,16 @@ class AuthService {
 
   // Get current user from SharedPreferences
   Future<User?> getCurrentUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString(AppConfig.userKey);
-    
-    if (userJson != null) {
-      final userData = Map<String, dynamic>.from(
-        Uri.splitQueryString(userJson).map(
-          (key, value) => MapEntry(key, value),
-        ),
-      );
-      return User.fromJson(userData);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString(AppConfig.userKey);
+      
+      if (userJson != null) {
+        final userData = json.decode(userJson); // PAKAI JSON DECODE
+        return User.fromJson(userData);
+      }
+    } catch (e) {
+      print('Error getting current user: $e');
     }
     
     return null;
@@ -142,7 +143,7 @@ class AuthService {
   // Save user data to SharedPreferences
   Future<void> _saveUserData(User user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConfig.userKey, user.toJson().toString());
+    await prefs.setString(AppConfig.userKey, json.encode(user.toJson())); // PAKAI JSON ENCODE
     await prefs.setString(AppConfig.roleKey, user.role);
   }
 }

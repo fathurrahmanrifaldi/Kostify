@@ -178,34 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 
                 const SizedBox(height: 16),
                 
-                // Demo Accounts Info
-                Container(
-                  padding: const EdgeInsets.all(AppTheme.spaceMD),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryLight.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(AppTheme.radiusMD),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Akun Demo:',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Admin: admin@kos.com / password',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      Text(
-                        'Penyewa: budi@gmail.com / password',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
+                
               ],
             ),
           ),

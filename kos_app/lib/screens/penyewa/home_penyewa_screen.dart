@@ -6,6 +6,8 @@ import '../../config/theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/helpers.dart';
 import '../auth/login_screen.dart';
+import '../shared/edit_profile_screen.dart';
+import '../shared/change_password_screen.dart';
 
 class HomePenyewaScreen extends StatefulWidget {
   const HomePenyewaScreen({super.key});
@@ -361,7 +363,12 @@ class _HomePenyewaScreenState extends State<HomePenyewaScreen> {
                     title: const Text('Edit Profile'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      Helpers.showSnackBar(context, 'Coming Soon');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const EditProfileScreen(),
+                        ),
+                      );
                     },
                   ),
                   const Divider(height: 1),
@@ -370,7 +377,12 @@ class _HomePenyewaScreenState extends State<HomePenyewaScreen> {
                     title: const Text('Ubah Password'),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      Helpers.showSnackBar(context, 'Coming Soon');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChangePasswordScreen(),
+                        ),
+                      );
                     },
                   ),
                   const Divider(height: 1),
