@@ -8,6 +8,7 @@ import '../../utils/helpers.dart';
 import '../auth/login_screen.dart';
 import '../shared/edit_profile_screen.dart';
 import '../shared/change_password_screen.dart';
+import 'riwayat_pembayaran_penyewa_screen.dart';
 
 class HomePenyewaScreen extends StatefulWidget {
   const HomePenyewaScreen({super.key});
@@ -86,7 +87,7 @@ class _HomePenyewaScreenState extends State<HomePenyewaScreen> {
       case 0:
         return _buildHome();
       case 1:
-        return const Center(child: Text('Riwayat (Coming Soon)'));
+        return const RiwayatPembayaranPenyewaScreen();
       case 2:
         return _buildProfile();
       default:
