@@ -1,5 +1,3 @@
-// lib/providers/kamar_provider.dart
-
 import 'package:flutter/material.dart';
 import '../models/kamar_model.dart';
 import '../services/kamar_service.dart';

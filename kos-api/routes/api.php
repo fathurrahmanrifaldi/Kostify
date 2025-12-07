@@ -19,10 +19,12 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes (perlu autentikasi)
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
+    Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::post('/profile/change-password', [AuthController::class, 'changePassword']);
 
     // Kamar routes (semua authenticated user bisa akses read)
     Route::get('/kamar', [KamarController::class, 'index']);

@@ -1,5 +1,3 @@
-// lib/screens/shared/edit_profile_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
@@ -25,7 +23,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final user = authProvider.user;
-    
+
     if (user != null) {
       _namaController.text = user.nama;
       _noTeleponController.text = user.noTelepon ?? '';
@@ -42,31 +40,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // TODO: Implement update profile API
-    // For now just show success message
-    Helpers.showSnackBar(context, 'Fitur update profile coming soon');
-    
-    // Uncomment when API ready:
-    // final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    // final success = await authProvider.updateProfile(
-    //   nama: _namaController.text,
-    //   noTelepon: _noTeleponController.text,
-    // );
-    
-    // if (success) {
-    //   Helpers.showSnackBar(context, 'Profile berhasil diupdate');
-    //   Navigator.pop(context);
-    // } else {
-    //   Helpers.showSnackBar(context, 'Gagal update profile', isError: true);
-    // }
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.updateProfile(
+      nama: _namaController.text,
+      noTelepon: _noTeleponController.text.isEmpty
+          ? null
+          : _noTeleponController.text,
+    );
+
+    if (!mounted) return;
+
+    if (success) {
+      Helpers.showSnackBar(context, 'Profile berhasil diupdate');
+      Navigator.pop(context);
+    } else {
+      Helpers.showSnackBar(
+        context,
+        authProvider.errorMessage ?? 'Gagal update profile',
+        isError: true,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-      ),
+      appBar: AppBar(title: const Text('Edit Profile')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -82,7 +81,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         radius: 60,
                         backgroundColor: AppTheme.primaryLight,
                         child: Text(
-                          authProvider.user?.nama.substring(0, 1).toUpperCase() ?? 'U',
+                          authProvider.user?.nama
+                                  .substring(0, 1)
+                                  .toUpperCase() ??
+                              'U',
                           style: const TextStyle(
                             fontSize: 48,
                             fontWeight: FontWeight.bold,
@@ -102,9 +104,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         border: Border.all(color: Colors.white, width: 2),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                         onPressed: () {
-                          Helpers.showSnackBar(context, 'Upload foto coming soon');
+                          Helpers.showSnackBar(
+                            context,
+                            'Upload foto coming soon',
+                          );
                         },
                       ),
                     ),
@@ -133,7 +142,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               builder: (context, authProvider, _) {
                 return CustomTextField(
                   label: 'Email',
-                  controller: TextEditingController(text: authProvider.user?.email),
+                  controller: TextEditingController(
+                    text: authProvider.user?.email,
+                  ),
                   prefixIcon: Icons.email,
                   enabled: false,
                 );
@@ -151,9 +162,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             const SizedBox(height: 32),
 
-            CustomButton(
-              text: 'Simpan Perubahan',
-              onPressed: _handleSubmit,
+            Consumer<AuthProvider>(
+              builder: (context, authProvider, _) {
+                return CustomButton(
+                  text: 'Simpan Perubahan',
+                  onPressed: _handleSubmit,
+                  isLoading: authProvider.isLoading,
+                );
+              },
             ),
 
             const SizedBox(height: 16),

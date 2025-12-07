@@ -1,8 +1,6 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/date_symbol_data_local.dart'; // ⭐ TAMBAHKAN
+import 'package:intl/date_symbol_data_local.dart';
 import 'config/theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/kamar_provider.dart';
@@ -36,7 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PembayaranProvider()),
       ],
       child: MaterialApp(
-        title: 'KosKu',
+        title: 'Kostify',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         home: const SplashScreen(),

@@ -1,5 +1,3 @@
-// lib/screens/auth/login_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
@@ -9,6 +7,7 @@ import '../../widgets/custom_textfield.dart';
 import '../../utils/helpers.dart';
 import '../admin/dashboard_screen.dart';
 import '../penyewa/home_penyewa_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,16 +78,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Container(
                     width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryLight,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(
-                      Icons.home_work,
-                      size: 60,
-                      color: AppTheme.primaryColor,
-                    ),
+                    height: 100,                    
+                    child: Image.asset('assets/images/logo_kostify2.png'),
                   ),
                 ),
                 
@@ -161,9 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     return null;
                   },
-                ),
-                
-                const SizedBox(height: 32),
+                ),                                         
+
+                const SizedBox(height: 24),
                 
                 // Login Button
                 Consumer<AuthProvider>(
@@ -176,9 +167,45 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 
-                
+                // Register Link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Belum punya akun? ',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const RegisterScreen(),
+                          ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: const Size(0, 0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        'Buat Akun',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w800,
+                          decoration: TextDecoration.underline,
+                          decorationColor: AppTheme.primaryColor,
+                          decorationThickness: 2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

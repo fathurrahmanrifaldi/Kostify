@@ -1,5 +1,3 @@
-// lib/screens/splash_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../config/theme.dart';
@@ -26,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     await authProvider.checkLoginStatus();
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 5));
 
     if (!mounted) return;
 
@@ -63,15 +61,14 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(
-                Icons.home_work,
-                size: 80,
-                color: AppTheme.primaryColor,
+              child: Image.asset(
+                'assets/images/logo_kostify_splash.png',
+                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(height: 24),
             const Text(
-              'KosKu',
+              'Kostify',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,

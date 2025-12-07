@@ -1,5 +1,3 @@
-// lib/services/auth_service.dart
-
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/app_config.dart';
@@ -15,29 +13,22 @@ class AuthService {
     try {
       final response = await _apiService.dio.post(
         AppConfig.loginEndpoint,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
 
       final data = _apiService.handleResponse(response);
-      
+
       if (data['success'] == true) {
         // Save token and user data
         final token = data['data']['token'];
         final user = User.fromJson(data['data']['user']);
-        
+
         await _apiService.saveToken(token);
         await _saveUserData(user);
-        
-        return {
-          'success': true,
-          'user': user,
-          'token': token,
-        };
+
+        return {'success': true, 'user': user, 'token': token};
       }
-      
+
       throw Exception(data['message'] ?? 'Login gagal');
     } on DioException catch (e) {
       throw Exception(_apiService.handleError(e));
@@ -65,22 +56,18 @@ class AuthService {
       );
 
       final data = _apiService.handleResponse(response);
-      
+
       if (data['success'] == true) {
         // Save token and user data
         final token = data['data']['token'];
         final user = User.fromJson(data['data']['user']);
-        
+
         await _apiService.saveToken(token);
         await _saveUserData(user);
-        
-        return {
-          'success': true,
-          'user': user,
-          'token': token,
-        };
+
+        return {'success': true, 'user': user, 'token': token};
       }
-      
+
       throw Exception(data['message'] ?? 'Registrasi gagal');
     } on DioException catch (e) {
       throw Exception(_apiService.handleError(e));
@@ -104,14 +91,65 @@ class AuthService {
     try {
       final response = await _apiService.dio.get(AppConfig.profileEndpoint);
       final data = _apiService.handleResponse(response);
-      
+
       if (data['success'] == true) {
         final user = User.fromJson(data['data']);
         await _saveUserData(user);
         return user;
       }
-      
+
       throw Exception('Gagal mengambil profile');
+    } on DioException catch (e) {
+      throw Exception(_apiService.handleError(e));
+    }
+  }
+
+  // Update Profile
+  Future<User> updateProfile({String? nama, String? noTelepon}) async {
+    try {
+      Map<String, dynamic> updateData = {};
+      if (nama != null) updateData['nama'] = nama;
+      if (noTelepon != null) updateData['no_telepon'] = noTelepon;
+
+      final response = await _apiService.dio.put(
+        AppConfig.profileEndpoint,
+        data: updateData,
+      );
+
+      final data = _apiService.handleResponse(response);
+
+      if (data['success'] == true) {
+        final user = User.fromJson(data['data']);
+        await _saveUserData(user);
+        return user;
+      }
+
+      throw Exception(data['message'] ?? 'Gagal update profile');
+    } on DioException catch (e) {
+      throw Exception(_apiService.handleError(e));
+    }
+  }
+
+  // Change Password
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await _apiService.dio.post(
+        '${AppConfig.profileEndpoint}/change-password',
+        data: {
+          'old_password': oldPassword,
+          'password': newPassword,
+          'password_confirmation': newPassword,
+        },
+      );
+
+      final data = _apiService.handleResponse(response);
+
+      if (data['success'] != true) {
+        throw Exception(data['message'] ?? 'Gagal ubah password');
+      }
     } on DioException catch (e) {
       throw Exception(_apiService.handleError(e));
     }
@@ -128,7 +166,7 @@ class AuthService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userJson = prefs.getString(AppConfig.userKey);
-      
+
       if (userJson != null) {
         final userData = json.decode(userJson); // PAKAI JSON DECODE
         return User.fromJson(userData);
@@ -136,14 +174,17 @@ class AuthService {
     } catch (e) {
       print('Error getting current user: $e');
     }
-    
+
     return null;
   }
 
   // Save user data to SharedPreferences
   Future<void> _saveUserData(User user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConfig.userKey, json.encode(user.toJson())); // PAKAI JSON ENCODE
+    await prefs.setString(
+      AppConfig.userKey,
+      json.encode(user.toJson()),
+    ); // PAKAI JSON ENCODE
     await prefs.setString(AppConfig.roleKey, user.role);
   }
 }

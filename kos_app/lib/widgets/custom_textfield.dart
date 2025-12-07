@@ -1,5 +1,3 @@
-// lib/widgets/custom_textfield.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../config/theme.dart';

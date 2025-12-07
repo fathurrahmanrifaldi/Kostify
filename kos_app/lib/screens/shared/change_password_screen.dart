@@ -1,7 +1,7 @@
-// lib/screens/shared/change_password_screen.dart
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
+import '../../providers/auth_provider.dart';
 import '../../utils/helpers.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
@@ -18,11 +18,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  
+
   bool _obscureOldPassword = true;
   bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -35,44 +34,30 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.changePassword(
+      oldPassword: _oldPasswordController.text,
+      newPassword: _newPasswordController.text,
+    );
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return;
 
-    setState(() {
-      _isLoading = false;
-    });
-
-    // TODO: Implement change password API
-    // For now just show success message
-    if (mounted) {
-      Helpers.showSnackBar(context, 'Fitur ubah password coming soon');
+    if (success) {
+      Helpers.showSnackBar(context, 'Password berhasil diubah');
+      Navigator.pop(context);
+    } else {
+      Helpers.showSnackBar(
+        context,
+        authProvider.errorMessage ?? 'Gagal ubah password',
+        isError: true,
+      );
     }
-    
-    // Uncomment when API ready:
-    // final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    // final success = await authProvider.changePassword(
-    //   oldPassword: _oldPasswordController.text,
-    //   newPassword: _newPasswordController.text,
-    // );
-    
-    // if (success) {
-    //   Helpers.showSnackBar(context, 'Password berhasil diubah');
-    //   Navigator.pop(context);
-    // } else {
-    //   Helpers.showSnackBar(context, 'Gagal ubah password', isError: true);
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ubah Password'),
-      ),
+      appBar: AppBar(title: const Text('Ubah Password')),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -93,10 +78,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   Expanded(
                     child: Text(
                       'Password minimal 6 karakter',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppTheme.infoColor,
-                      ),
+                      style: TextStyle(fontSize: 13, color: AppTheme.infoColor),
                     ),
                   ),
                 ],
@@ -195,10 +177,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
             const SizedBox(height: 32),
 
-            CustomButton(
-              text: 'Ubah Password',
-              onPressed: _handleSubmit,
-              isLoading: _isLoading,
+            Consumer<AuthProvider>(
+              builder: (context, authProvider, _) {
+                return CustomButton(
+                  text: 'Ubah Password',
+                  onPressed: _handleSubmit,
+                  isLoading: authProvider.isLoading,
+                );
+              },
             ),
 
             const SizedBox(height: 16),

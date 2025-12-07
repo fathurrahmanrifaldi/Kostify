@@ -1,5 +1,3 @@
-// lib/models/kamar_model.dart
-
 import 'user_model.dart';
 
 class Kamar {

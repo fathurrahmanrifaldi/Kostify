@@ -1,5 +1,3 @@
-// lib/models/pembayaran_model.dart
-
 import 'user_model.dart';
 import 'kamar_model.dart';
 

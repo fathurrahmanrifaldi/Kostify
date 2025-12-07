@@ -1,5 +1,3 @@
-// lib/screens/admin/dashboard_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
@@ -382,9 +380,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () {
                       showAboutDialog(
                         context: context,
-                        applicationName: 'KosKu',
+                        applicationName: 'Kostify',
                         applicationVersion: '1.0.0',
-                        applicationLegalese: '© 2025 KosKu App',
+                        applicationLegalese: '© 2025 Kostify App',
                       );
                     },
                   ),

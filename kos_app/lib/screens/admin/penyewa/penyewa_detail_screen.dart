@@ -1,11 +1,14 @@
-// lib/screens/admin/penyewa/penyewa_detail_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../config/theme.dart';
+import '../../../models/kamar_model.dart';
 import '../../../providers/user_provider.dart';
+import '../../../providers/kamar_provider.dart';
+import '../../../providers/pembayaran_provider.dart';
 import '../../../utils/helpers.dart';
 import 'penyewa_form_screen.dart';
+import '../kamar/kamar_detail_screen.dart';
+import '../pembayaran/pembayaran_list_screen.dart';
 
 class PenyewaDetailScreen extends StatefulWidget {
   final int userId;
@@ -25,7 +28,15 @@ class _PenyewaDetailScreenState extends State<PenyewaDetailScreen> {
 
   Future<void> _loadData() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final kamarProvider = Provider.of<KamarProvider>(context, listen: false);
+    final pembayaranProvider = Provider.of<PembayaranProvider>(
+      context,
+      listen: false,
+    );
+
     await userProvider.fetchUserById(widget.userId);
+    await kamarProvider.fetchKamars();
+    await pembayaranProvider.fetchPembayarans();
   }
 
   Future<void> _handleDelete() async {
@@ -188,22 +199,91 @@ class _PenyewaDetailScreenState extends State<PenyewaDetailScreen> {
                           style: Theme.of(context).textTheme.displaySmall,
                         ),
                         const Divider(height: 24),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.home_work),
-                          title: const Text('Kamar yang Ditempati'),
-                          subtitle: const Text('Belum ada kamar'),
-                          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                        // Kamar yang Ditempati
+                        Consumer<KamarProvider>(
+                          builder: (context, kamarProvider, _) {
+                            // Find kamar for this user
+                            final kamarDitempati = kamarProvider.kamars
+                                .firstWhere(
+                                  (kamar) => kamar.userId == user.id,
+                                  orElse: () => Kamar(
+                                    id: 0,
+                                    nomorKamar: '',
+                                    tipe: '',
+                                    hargaBulanan: 0,
+                                    status: '',
+                                  ),
+                                );
+
+                            final hasKamar = kamarDitempati.id != 0;
+
+                            return InkWell(
+                              onTap: hasKamar
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => KamarDetailScreen(
+                                            kamarId: kamarDitempati.id,
+                                          ),
+                                        ),
+                                      ).then((_) => _loadData());
+                                    }
+                                  : null,
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: const Icon(Icons.home_work),
+                                title: const Text('Kamar yang Ditempati'),
+                                subtitle: Text(
+                                  hasKamar
+                                      ? '${kamarDitempati.nomorKamar} (${kamarDitempati.tipe})'
+                                      : 'Belum ada kamar',
+                                ),
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         const Divider(height: 1),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: const Icon(Icons.payment),
-                          title: const Text('Riwayat Pembayaran'),
-                          subtitle: const Text('Lihat semua pembayaran'),
-                          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                          onTap: () {
-                            Helpers.showSnackBar(context, 'Coming Soon');
+                        // Riwayat Pembayaran
+                        Consumer<PembayaranProvider>(
+                          builder: (context, pembayaranProvider, _) {
+                            // Filter pembayarans for this user
+                            final userPembayarans = pembayaranProvider
+                                .pembayarans
+                                .where((p) => p.userId == user.id)
+                                .toList();
+
+                            return InkWell(
+                              onTap: userPembayarans.isNotEmpty
+                                  ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const PembayaranListScreen(),
+                                        ),
+                                      ).then((_) => _loadData());
+                                    }
+                                  : null,
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: const Icon(Icons.payment),
+                                title: const Text('Riwayat Pembayaran'),
+                                subtitle: Text(
+                                  userPembayarans.isEmpty
+                                      ? 'Belum ada pembayaran'
+                                      : '${userPembayarans.length} pembayaran',
+                                ),
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ],
